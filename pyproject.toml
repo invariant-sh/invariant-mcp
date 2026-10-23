@@ -1,0 +1,117 @@
+[project]
+name = "invariant-mcp"
+version = "0.1.0"
+description = "MCP server for Holds evals, Vigil policy checks, and Maul failure probes"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12"
+authors = [{ name = "Invariant Labs" }]
+keywords = ["mcp", "llm", "agents", "holds", "vigil", "maul"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Testing",
+  "Typing :: Typed",
+]
+dependencies = [
+  "mcp[cli]>=2.3.0,<3",
+  "pydantic>=2.7",
+  "pyyaml>=6.0.2",
+  # Pins are the commits this server was written against. Holds and Vigil are
+  # not published on PyPI; Maul is a Rust binary and is not a Python dependency.
+  "holds @ git+https://github.com/invariant-sh/holds.git@ded25396292d6f33533f69469d95d8d07e30e467",
+  "vigil @ git+https://github.com/invariant-sh/vigil.git@f07762bbbf0ffc991596527025cadaaebbd1a3c5",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3.0",
+  "ruff>=0.11.0",
+]
+
+[project.scripts]
+invariant-mcp = "invariant_mcp.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/invariant-sh/invariant-mcp"
+Documentation = "https://github.com/invariant-sh/invariant-mcp#readme"
+Repository = "https://github.com/invariant-sh/invariant-mcp"
+Issues = "https://github.com/invariant-sh/invariant-mcp/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/invariant_mcp"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/invariant_mcp" = "invariant_mcp"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src/invariant_mcp",
+  "/examples",
+  "/docs",
+  "/README.md",
+  "/LICENSE",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests", "examples"]
+
+[tool.ruff.lint]
+select = [
+  "E",
+  "F",
+  "I",
+  "UP",
+  "B",
+  "SIM",
+  "RUF",
+  "N",
+  "ANN",
+  "S",
+  "T20",
+  "C4",
+  "PT",
+]
+ignore = [
+  "ANN401",
+  "S101",
+  "S603",
+  "S607",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["ANN", "S105", "S106", "S310", "T20"]
+"examples/**/*.py" = ["ANN", "S310", "T20"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["invariant_mcp", "tests"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+markers = [
+  "llm: optional tool-selection eval that calls an OpenAI-compatible model",
+]

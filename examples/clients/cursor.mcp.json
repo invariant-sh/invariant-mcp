@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "invariant": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/ABSOLUTE/PATH/invariant-mcp",
+        "invariant-mcp",
+        "--workspace",
+        "/ABSOLUTE/PATH/agent-repo"
+      ],
+      "env": {
+        "INVARIANT_MAUL_BIN": "maul",
+        "INVARIANT_LOG_LEVEL": "INFO"
+      }
+    }
+  }
+}

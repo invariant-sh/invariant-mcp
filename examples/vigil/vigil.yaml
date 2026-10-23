@@ -1,0 +1,23 @@
+# Sample Vigil policy (schema version 1).
+# check_policy validates this file. Pass events.jsonl to dry-run it.
+# Dry-run does not deploy the policy.
+version: 1
+scope:
+  project: support-agent
+  environment: production
+budgets:
+  max_llm_calls_per_workflow: 4
+  max_cost_usd_per_workflow: 0.50
+models:
+  allow: [gpt-4o-mini, gpt-4.1-mini]
+  route_after_cost_usd: 0.20
+  fallback_model: gpt-4o-mini
+controls:
+  - type: circuit_breaker
+    condition: repeated_equivalent_request
+    max_occurrences: 2
+  - type: tool_content_guard
+    mode: block
+    patterns: [instruction_override]
+audit:
+  emit: true
