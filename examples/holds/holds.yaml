@@ -1,0 +1,26 @@
+# Sample Holds suite (schema version 1).
+# `holds run` / the run_eval tool launches `agent.command` with a timeout.
+# Holds itself executes that command through `sh -c`. The command is operator
+# configuration in this file; the MCP tool does not take a shell string.
+version: 1
+agent:
+  command: "python3 agent.py"
+  result_path: "artifacts/result.json"
+defaults:
+  repeats: 1
+  timeout_seconds: 15
+  seed: 7
+thresholds:
+  pass_rate_gte: 1.0
+tasks:
+  - id: classify-refund-request
+    input:
+      customer_message: "I was charged twice for the subscription."
+    expected:
+      category: refund_request
+    graders:
+      - type: exact_field
+        path: "$.category"
+        equals: refund_request
+    thresholds:
+      pass_rate_gte: 1.0

@@ -1,0 +1,13 @@
+# Sample Maul configuration.
+# probability 1.0 with a single short-circuit scenario faults every chat
+# completion and does not call upstream, so a probe needs no provider key.
+# malformed_tool_call_json does call upstream. Lower probability to exercise
+# retries; Maul's seed makes that choice reproducible.
+proxy_listen: "127.0.0.1:7777"
+upstream_base_url: "https://api.openai.com"
+scenarios: [force_500]
+probability: 1.0
+seed: 42
+budget:
+  max_llm_calls: 20
+  max_cost_usd: 1.0
